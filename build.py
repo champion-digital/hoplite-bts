@@ -86,12 +86,17 @@ def head(title, desc, page=""):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{BASE}{page}">
-<meta property="og:image" content="{BASE}assets/img/share.png">
+<meta property="og:image" content="{BASE}assets/img/share-card.png">
+<meta property="og:image:secure_url" content="{BASE}assets/img/share-card.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Behind the Shield">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{BASE}assets/img/share.png">
+<meta name="twitter:title" content="{e(title)}">
+<meta name="twitter:description" content="{e(desc)}">
+<meta name="twitter:image" content="{BASE}assets/img/share-card.png">
+<link rel="image_src" href="{BASE}assets/img/share-card.png">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
