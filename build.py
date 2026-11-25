@@ -4,13 +4,14 @@
 Run:  python3 build.py
 Edit the content or the page functions here, never the generated .html files.
 """
+import json
 from html import escape as e
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 SITE = "https://shiphoplite.com/"
 CONTACT = "https://shiphoplite.com/contact-us/"
-EDITION = "edition.html"          # every edition link opens the Week 47 sample
+EDITION = "edition.html"          # every edition link opens the sample edition (November 16)
 COUNT = 30
 
 # (week, short date, long date, title) newest first, grouped by month
@@ -55,6 +56,17 @@ ARCHIVE = [
         ("17", "Apr 20", "Diesel $5.61. Every lane has already changed.")]),
 ]
 assert sum(len(r) for _, r in ARCHIVE) == COUNT
+INFO = json.loads((ROOT / "data" / "editions.json").read_text(encoding="utf-8"))   # week -> tags, dek, alt
+MONTHS = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April", "May": "May", "Jun": "June", "Jul": "July", "Aug": "August", "Sep": "September", "Oct": "October", "Nov": "November", "Dec": "December"}
+
+
+def long_date(short):
+    m, d = short.split()
+    return f"{MONTHS[m]} {d}, 2026"
+
+
+def tags(wk):
+    return '<span class="tags">' + "".join(f'<span class="tag">{e(t)}</span>' for t in INFO[str(wk)]["tags"]) + "</span>"
 
 
 def head(title, desc):
@@ -174,16 +186,12 @@ def figure(num, cap):
 
 # ---------------------------------------------------------------- home
 def home():
-    cards = [
-        ("wk47.jpg", "A semi truck on a snowy highway at night", "Week 47 · November 16, 2026", ARCHIVE[0][1][1][2]),
-        ("wk46.jpg", "A highway curving into the dusk", "Week 46 · November 9, 2026", ARCHIVE[0][1][2][2]),
-        ("wk45.jpg", "Two trucks side by side on a highway at night", "Week 45 · November 2, 2026", ARCHIVE[0][1][3][2]),
-    ]
     cards_html = "\n".join(f"""      <a class="card" href="{EDITION}">
-        <img class="photo" src="assets/img/{img}" alt="{e(alt)}" loading="lazy">
-        <p class="small-meta">{e(m)}</p>
+        <img class="photo" src="assets/img/editions/wk{wk}.jpg" alt="{e(INFO[wk]['alt'])}" loading="lazy">
+        <p class="small-meta">{e(long_date(d))}</p>
         <h3 class="display">{e(t)}</h3>
-      </a>""" for img, alt, m, t in cards)
+        {tags(wk)}
+      </a>""" for wk, d, t in ARCHIVE[0][1][1:4])
     return head("Behind the Shield. Hoplite's weekly freight brief", "What moved in freight this week, why it matters to your network and what to do about it. Six minutes, every Monday.") + MENU + f"""<header>
   {NAV}
   <div class="wrap masthead">
@@ -196,11 +204,12 @@ def home():
 </header>
 <main>
 <section class="wrap latest">
-  <a href="{EDITION}"><img class="photo" src="assets/img/wk48.jpg" alt="A truck pulling out of a truck stop before dawn, the interstate behind it"></a>
+  <a href="{EDITION}"><img class="photo" src="assets/img/wk48.jpg" alt="A crowded truck stop at night seen from above, one truck pulling out toward the highway"></a>
   <div class="latest-text">
     <div class="left">
-      {meta("Latest{ edition}", "Week 48", "November 23, 2026")}
+      {meta("Latest edition", "November 23, 2026")}
       <h2 class="display"><a href="{EDITION}">Thanksgiving flipped the tape: rates rose <em>even as 9% more trucks showed up.</em></a></h2>
+      {tags(48)}
     </div>
     <div class="right">
       <p>More trucks came looking for work. Less freight needed moving. Prices went up anyway. And Q3's numbers just handed you the only math that matters for your 2027 bid.</p>
@@ -228,8 +237,15 @@ def editions():
     groups = []
     for month, rows in ARCHIVE:
         rows_html = "\n".join(f"""        <a class="row" href="{EDITION}">
-          <span class="week">Week {wk}</span><span class="date">{e(d)}</span>
-          <span class="title display">{e(t)}</span><span class="arrow" aria-hidden="true">&rarr;</span>
+          <span class="date">{e(d)}</span>
+          <span class="main">
+            <span class="title display">{e(t)}</span>
+            <span class="reveal"><span class="reveal-inner">
+              <span class="dek">{e(INFO[wk]['dek'])}</span>
+              {tags(wk)}
+            </span></span>
+          </span>
+          <span class="media"><img src="assets/img/editions/wk{wk}.jpg" alt="{e(INFO[wk]['alt'])}" loading="lazy"><span class="arrow" aria-hidden="true">&rarr;</span></span>
         </a>""" for wk, d, t in rows)
         groups.append(f"""    <section class="month">
       <h2 class="display">{e(month)}</h2>
@@ -286,12 +302,13 @@ def edition():
         ("+28.1%", "Freight spend, year over year", "U.S. Bank Freight Payment Index."),
     ]
     numbers_html = "\n".join(f'      <div class="number"><p class="num display">{e(n)}</p><p class="label">{e(l)}</p><p class="cap">{e(c)}</p></div>' for n, l, c in numbers)
-    return head("Trucking's sticker price just tied its all-time record. Behind the Shield, Week 47", "Contract van rates hit $3.28 a mile in October, matching the May 2022 record, while freight volume fell. Week 47 of Hoplite's weekly freight brief.") + MENU + f"""<header class="hero">
+    return head("Trucking's sticker price just tied its all-time record. Behind the Shield, November 16, 2026", "Contract van rates hit $3.28 a mile in October, matching the May 2022 record, while freight volume fell. From Hoplite's weekly freight brief.") + MENU + f"""<header class="hero">
   <div class="hero-photo"><img src="assets/img/wk47.jpg" alt="A long-nose semi truck on a snowy highway at night"></div>
   {NAV}
   <div class="wrap hero-text">
     <h1 class="headline display">Trucking's sticker price just tied its all-time record, <em>with less freight on the road.</em></h1>
-    {meta("Week 47", "November 16, 2026", "6 min read")}
+    {meta("November 16, 2026", "6 min read")}
+    {tags(47)}
   </div>
 </header>
 <main>
@@ -368,7 +385,7 @@ def edition():
   <a class="prev-card" href="{EDITION}">
     <img class="photo" src="assets/img/wk46.jpg" alt="A highway curving into the dusk" loading="lazy">
     <div>
-      <p class="small-meta">Previous edition &middot; Week 46</p>
+      <p class="small-meta">Previous edition &middot; November 9, 2026</p>
       <h3 class="display">The inversion is over: spot crosses back under contract.</h3>
     </div>
   </a>
