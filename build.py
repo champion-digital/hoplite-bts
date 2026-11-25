@@ -69,7 +69,10 @@ def tags(wk):
     return '<span class="tags">' + "".join(f'<span class="tag">{e(t)}</span>' for t in INFO[str(wk)]["tags"]) + "</span>"
 
 
-def head(title, desc):
+BASE = "https://champion-digital.github.io/hoplite-bts/"   # link previews need full addresses
+
+
+def head(title, desc, page=""):
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -78,6 +81,17 @@ def head(title, desc):
 <meta name="robots" content="noindex, nofollow">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Behind the Shield">
+<meta property="og:title" content="{e(title)}">
+<meta property="og:description" content="{e(desc)}">
+<meta property="og:url" content="{BASE}{page}">
+<meta property="og:image" content="{BASE}assets/img/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Behind the Shield">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{BASE}assets/img/share.png">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -253,7 +267,7 @@ def editions():
 {rows_html}
       </div>
     </section>""")
-    return head("All editions. Behind the Shield", f"Every edition of Behind the Shield, Hoplite's weekly freight brief, since April 2026. {COUNT} editions.") + MENU + f"""<header class="hero short">
+    return head("All editions. Behind the Shield", f"Every edition of Behind the Shield, Hoplite's weekly freight brief, since April 2026. {COUNT} editions.", "editions.html") + MENU + f"""<header class="hero short">
   <div class="hero-photo"><img src="assets/img/overpass.jpg" alt="An interstate at night seen from an overpass, every lane streaked with light"></div>
   {NAV}
   <div class="wrap hero-text">
@@ -302,7 +316,7 @@ def edition():
         ("+28.1%", "Freight spend, year over year", "U.S. Bank Freight Payment Index."),
     ]
     numbers_html = "\n".join(f'      <div class="number"><p class="num display">{e(n)}</p><p class="label">{e(l)}</p><p class="cap">{e(c)}</p></div>' for n, l, c in numbers)
-    return head("Trucking's sticker price just tied its all-time record. Behind the Shield, November 16, 2026", "Contract van rates hit $3.28 a mile in October, matching the May 2022 record, while freight volume fell. From Hoplite's weekly freight brief.") + MENU + f"""<header class="hero">
+    return head("Trucking's sticker price just tied its all-time record. Behind the Shield, November 16, 2026", "Contract van rates hit $3.28 a mile in October, matching the May 2022 record, while freight volume fell. From Hoplite's weekly freight brief.", "edition.html") + MENU + f"""<header class="hero">
   <div class="hero-photo"><img src="assets/img/wk47.jpg" alt="A long-nose semi truck on a snowy highway at night"></div>
   {NAV}
   <div class="wrap hero-text">
