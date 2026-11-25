@@ -138,7 +138,7 @@ SUBSCRIBE = """<section class="subscribe deep" id="subscribe">
 CLOSING = f"""<section class="closing">
   <img src="assets/img/closing.jpg" alt="A truck on a winding road at night, city lights on the horizon" loading="lazy">
   <div class="wrap">
-    <h2 class="display">Move freight with the team <em>behind the Shield.</em></h2>
+    <h2 class="display">Move freight with the team <em>behind the shield.</em></h2>
     <p>Van, reefer, flatbed and cross-border, with a senior operator on every account.</p>
     <a class="btn" href="{CONTACT}" target="_blank" rel="noopener">Talk to Hoplite <span aria-hidden="true">&rarr;</span></a>
   </div>
